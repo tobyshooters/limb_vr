@@ -1,6 +1,6 @@
-from flask import Flask
-app = Flask(__name__)
+from flask import Flask, url_for
+app = Flask(__name__, static_url_path='')
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return app.send_static_file('index.html')
