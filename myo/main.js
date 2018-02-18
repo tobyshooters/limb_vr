@@ -163,9 +163,9 @@ $(document).ready(() => {
   document.body.appendChild(renderer.domElement);
 
   let origin = new THREE.Vector3(0, 0, 0);
-  camera.position.z = 1.5;
-  camera.position.y = 1.5;
-  camera.position.x = 0.75;
+  camera.position.z = 1.0;
+  camera.position.y = 1.0;
+  camera.position.x = 0.5;
   camera.rotation.x = 45 * Math.PI / 180;
   camera.lookAt(origin);
 
