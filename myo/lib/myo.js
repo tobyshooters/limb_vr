@@ -201,6 +201,7 @@
 			var ori = utils.quatRotate(myo.orientationOffset, data.orientation);
 			var imu_data = {
         myo : data.myo,
+        timestamp : data.timestamp,
 				orientation : ori,
 				accelerometer : {
 					x : data.accelerometer[0],
