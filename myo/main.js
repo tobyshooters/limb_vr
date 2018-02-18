@@ -1,6 +1,22 @@
 Myo.connect('com.treehacks.Myanmar');
 
 /////////////////////////////////////////
+// CSV Time Series Exporting ////////////
+/////////////////////////////////////////
+
+time_series = { "0": [{"a": 1}], "1": [{"b": 4}] } 
+
+function clearTimeSeries() {
+  time_series["0"] = [];
+  time_series["1"] = [];
+}
+
+function downloadCSVs() {
+  downloadCSV(time_series["0"]);
+  downloadCSV(time_series["1"]);
+}
+
+/////////////////////////////////////////
 // Vector Infrastructure ////////////////
 /////////////////////////////////////////
 
@@ -69,6 +85,7 @@ function MyoFactory(id_str) {
       this.setCalibrationMatrix();
       setTimeout(() => { 
         this.calibrated = true; 
+        clearTimeSeries();
       }, 1000);
     }
   }
@@ -96,22 +113,6 @@ function MyoFactory(id_str) {
       return position;
     }
   }
-}
-
-/////////////////////////////////////////
-// CSV Time Series Exporting ////////////
-/////////////////////////////////////////
-
-time_series = { "0": [{"a": 1}], "1": [{"b": 4}] } 
-
-function clearTimeSeries() {
-  time_series["0"] = [];
-  time_series["1"] = [];
-}
-
-function downloadCSVs() {
-  downloadCSV(time_series["0"]);
-  downloadCSV(time_series["1"]);
 }
 
 /////////////////////////////////////////
