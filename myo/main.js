@@ -40,7 +40,7 @@ function Calibrator(name) {
 
 function vecFromQt(qt) {
   let qt3 = new THREE.Quaternion().set(qt.x, qt.y, qt.z, qt.w);
-  let vec = new THREE.Vector3(0, 0, 1).applyQuaternion(qt3);
+  let vec = new THREE.Vector3(0, 1, 0).applyQuaternion(qt3);
   return vec;
 }
 
@@ -63,7 +63,9 @@ function MyoFactory(id_str) {
       this.calibratorY.process(vec);
     else {
       this.setCalibrationMatrix();
-      this.calibrated = true;
+      setTimeout(() => { 
+        this.calibrated = true; 
+      }, 1000);
     }
   }
 
@@ -84,7 +86,6 @@ function MyoFactory(id_str) {
     if (this.calibrationMatrix == null) 
       throw Error();
     else {
-      // console.log(input.toArray());
       let vector = math.matrix(input.toArray());
       let result =  math.multiply(this.calibrationMatrix, vector).toArray();
       let position = new THREE.Vector3(result[0], result[1], result[2]);
@@ -101,6 +102,7 @@ var positionVectorOne = new THREE.Vector3(0, 0, 0);
 
 Myo.on('imu', (data) => { 
   newInput = vecFromQt(data.orientation);
+
   if (data.myo == 0) {
     if (zeroMyo.calibrated) 
       positionVectorZero = zeroMyo.transformVec(newInput);
@@ -120,14 +122,17 @@ $(document).ready(() => {
   var height = window.innerHeight;
 
   var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
+  var camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 1000);
   var renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
   document.body.appendChild(renderer.domElement);
 
-  // camera.position.set(1, 1, 2);
-  camera.position.z = 3;
   var origin = new THREE.Vector3(0, 0, 0);
+  camera.position.z = 2;
+  camera.position.y = 2;
+  camera.position.x = 1;
+  camera.rotation.x = 45 * Math.PI / 180;
+  camera.lookAt(origin);
 
   // My Arrows
   var arrowZero = new THREE.ArrowHelper(positionVectorZero, origin, 1, 0xffff00);
@@ -136,20 +141,18 @@ $(document).ready(() => {
 
   // Reference Arrows
   var xdir = new THREE.Vector3(1, 0, 0);
-  var xarrow = new THREE.ArrowHelper(xdir, origin, 0.2, 0xff0000);
+  var xarrow = new THREE.ArrowHelper(xdir, origin, 0.5, 0xff0000);
   var ydir = new THREE.Vector3(0, 1, 0);
-  var yarrow = new THREE.ArrowHelper(ydir, origin, 0.2, 0x00ff00);
+  var yarrow = new THREE.ArrowHelper(ydir, origin, 0.5, 0x00ff00);
   var zdir = new THREE.Vector3(0, 0, 1);
-  var zarrow = new THREE.ArrowHelper(zdir, origin, 0.2, 0x0000ff);
+  var zarrow = new THREE.ArrowHelper(zdir, origin, 0.5, 0x0000ff);
   scene.add(xarrow, yarrow, zarrow);
 
   (function animate() {
     requestAnimationFrame(animate);
-
     arrowZero.setDirection(positionVectorZero);
     arrowOne.position.copy(positionVectorZero);
     arrowOne.setDirection(positionVectorOne);
-
     renderer.render(scene, camera);
   })();
 });
