@@ -1,5 +1,9 @@
 Myo.connect('com.treehacks.Myanmar');
 
+/////////////////////////////////////////
+// Vector Infrastructure ////////////////
+/////////////////////////////////////////
+
 function Calibrator(name) {
   this.name             = name;
   this.calibrated       = false;
@@ -94,22 +98,46 @@ function MyoFactory(id_str) {
   }
 }
 
+/////////////////////////////////////////
+// CSV Time Series Exporting ////////////
+/////////////////////////////////////////
+
+time_series = { "0": [{"a": 1}], "1": [{"b": 4}] } 
+
+function clearTimeSeries() {
+  time_series["0"] = [];
+  time_series["1"] = [];
+}
+
+function downloadCSVs() {
+  downloadCSV(time_series["0"]);
+  downloadCSV(time_series["1"]);
+}
+
+/////////////////////////////////////////
+// Run Time Code ////////////////////////
+/////////////////////////////////////////
+
 zeroMyo = new MyoFactory("0");
-var positionVectorZero = new THREE.Vector3(0, 0, 0);
+let positionVectorZero = new THREE.Vector3(0, 0, 0);
 
 oneMyo = new MyoFactory("1");
-var positionVectorOne = new THREE.Vector3(0, 0, 0);
+let positionVectorOne = new THREE.Vector3(0, 0, 0);
 
 Myo.on('imu', (data) => { 
   newInput = vecFromQt(data.orientation);
 
   if (data.myo == 0) {
+    time_series["0"].push(data);
+
     if (zeroMyo.calibrated) 
       positionVectorZero = zeroMyo.transformVec(newInput);
     else
       zeroMyo.processInput(newInput);
   }
   if (data.myo == 1) {
+    time_series["1"].push(data);
+
     if (oneMyo.calibrated) 
       positionVectorOne = zeroMyo.transformVec(newInput);
     else
@@ -118,16 +146,16 @@ Myo.on('imu', (data) => {
 });
 
 $(document).ready(() => {
-  var width = window.innerWidth;
-  var height = window.innerHeight;
+  let width = window.innerWidth;
+  let height = window.innerHeight;
 
-  var scene = new THREE.Scene();
-  var camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 1000);
-  var renderer = new THREE.WebGLRenderer();
+  let scene = new THREE.Scene();
+  let camera = new THREE.PerspectiveCamera(90, width / height, 0.1, 1000);
+  let renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
   document.body.appendChild(renderer.domElement);
 
-  var origin = new THREE.Vector3(0, 0, 0);
+  let origin = new THREE.Vector3(0, 0, 0);
   camera.position.z = 2;
   camera.position.y = 2;
   camera.position.x = 1;
@@ -135,17 +163,17 @@ $(document).ready(() => {
   camera.lookAt(origin);
 
   // My Arrows
-  var arrowZero = new THREE.ArrowHelper(positionVectorZero, origin, 1, 0xffff00);
-  var arrowOne = new THREE.ArrowHelper(positionVectorOne, origin, 1, 0xff00ff);
+  let arrowZero = new THREE.ArrowHelper(positionVectorZero, origin, 1, 0xffff00);
+  let arrowOne = new THREE.ArrowHelper(positionVectorOne, origin, 1, 0xff00ff);
   scene.add(arrowZero, arrowOne);
 
   // Reference Arrows
-  var xdir = new THREE.Vector3(1, 0, 0);
-  var xarrow = new THREE.ArrowHelper(xdir, origin, 0.5, 0xff0000);
-  var ydir = new THREE.Vector3(0, 1, 0);
-  var yarrow = new THREE.ArrowHelper(ydir, origin, 0.5, 0x00ff00);
-  var zdir = new THREE.Vector3(0, 0, 1);
-  var zarrow = new THREE.ArrowHelper(zdir, origin, 0.5, 0x0000ff);
+  let xdir = new THREE.Vector3(1, 0, 0);
+  let xarrow = new THREE.ArrowHelper(xdir, origin, 0.5, 0xff0000);
+  let ydir = new THREE.Vector3(0, 1, 0);
+  let yarrow = new THREE.ArrowHelper(ydir, origin, 0.5, 0x00ff00);
+  let zdir = new THREE.Vector3(0, 0, 1);
+  let zarrow = new THREE.ArrowHelper(zdir, origin, 0.5, 0x0000ff);
   scene.add(xarrow, yarrow, zarrow);
 
   (function animate() {
