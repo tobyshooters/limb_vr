@@ -26,13 +26,46 @@
 <body>
   <div class="container">
     <div class="row">
-      <div class="two-thirds column" style="margin-top: 25%">
-        <h4>Limb VR Data</h4>
-        <p>Aujourd'hui maman est morte. Ou peut-être hier, je ne sais pas.</p>
+      <div class="two-thirds column">
+        <h4>Limb VR Personal Analytics</h4>
+        <p>Dynamically adapting to your own therapeutical needs, Limb VR displays your current progress and future steps to recovery.</p>
       </div>
     </div>
-    <div class="row timeseries">
 
+    <div class="row">
+        <div class="half column">
+            <img src="img/lowerW.png">
+        </div>
+        <div class="half column">
+            <img src="img/upperW.png">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="half column">
+            <img src="img/lowerX.png">
+        </div>
+            <img src="img/upperX.png">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="half column">
+            <img src="img/lowerY.png">
+        </div>
+            <img src="img/upperY.png">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="half column">
+            <img src="img/lowerZ.png">
+        </div>
+            <img src="img/upperZ.png">
+        </div>
+    </div>
+
+    <div class="row timeseries">
     </div>
   </div>
 
@@ -53,12 +86,12 @@
                 }
             })
             _.sortBy(data, o => o["timestamp"]);
-            _.map(data, o => {
-                return o["orientation.w"];
+            data = _.map(data, o => {
+                return {
+                    value: parseFloat(o.w)
+                }
             });
-            console.log(data);
             var domEl = 'timeseries';
-            var brushEnabled = true;
             timeseries(domEl, data);
         });
     }
