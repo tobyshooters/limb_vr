@@ -78,7 +78,7 @@
 
     function render(classd, spaced, data, enableBrush) {
         
-        var padding = timeRangePad(_.map(data, 'value'));
+        var padding = timeRangePad(_.pluck(data, 'value'));
 
         var margin = {
             top: 10,

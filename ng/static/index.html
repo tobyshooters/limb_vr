@@ -37,7 +37,8 @@
   </div>
 
   <script src="https://d3js.org/d3.v3.min.js"></script>
-  <script src="js/lodash.js"></script>
+  <script src="js/underscore.js"></script>
+  <script src="js/moment.js"></script>
   <script src="js/timeseries.js"></script>
   <script>
     window.onload = function() {
@@ -51,9 +52,14 @@
                     z:         d["orientation.z"]
                 }
             })
+            _.sortBy(data, o => o["timestamp"]);
+            _.map(data, o => {
+                return o["orientation.w"];
+            });
+            console.log(data);
             var domEl = 'timeseries';
             var brushEnabled = true;
-            timeseries(domEl, data, brushEnabled);
+            timeseries(domEl, data);
         });
     }
 
